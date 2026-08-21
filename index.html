@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Punjab Mobile Hub - Premium Mobile Accessories</title>
+  <title>Punjab Mobile Hub - Premium Mobile Store</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -16,9 +16,9 @@
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
 
-  <!-- TOP ANNOUNCEMENT BAR -->
+  <!-- TOP BANNER -->
   <div class="bg-amber-500 text-slate-950 text-xs font-bold py-1.5 px-4 text-center tracking-wide">
-    🚀 Fast Shipping Across Punjab & All India | 100% Quality Tested Products!
+    🚀 Fast Shipping Across Punjab & All India | 100% Quality Tested!
   </div>
 
   <!-- NAVBAR -->
@@ -39,15 +39,15 @@
         </div>
       </div>
 
-      <!-- DESKTOP NAV LINKS -->
+      <!-- DESKTOP NAV -->
       <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-300">
-        <a href="#store-section" class="hover:text-amber-400 transition">Store</a>
+        <a href="#main-store" class="hover:text-amber-400 transition">Store</a>
         <button onclick="openPolicy('shipping')" class="hover:text-amber-400 transition">Shipping</button>
         <button onclick="openPolicy('returns')" class="hover:text-amber-400 transition">Returns</button>
-        <button onclick="contactSupport()" class="hover:text-amber-400 transition">WhatsApp Support</button>
+        <button onclick="contactSupport()" class="hover:text-amber-400 transition">Support</button>
       </nav>
 
-      <!-- CART BUTTON -->
+      <!-- CART -->
       <button onclick="toggleCart()" class="relative p-2.5 bg-slate-900 border border-slate-700 hover:border-amber-500 rounded-xl transition flex items-center gap-2">
         <i data-lucide="shopping-bag" class="w-5 h-5 text-amber-400"></i>
         <span class="hidden sm:inline text-xs font-bold text-slate-200">Cart</span>
@@ -56,59 +56,50 @@
     </div>
   </header>
 
-  <!-- MOBILE SLIDE-OVER MENU -->
+  <!-- MOBILE MENU -->
   <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/70 hidden">
     <div class="absolute left-0 top-0 bottom-0 w-3/4 max-w-xs bg-slate-900 border-r border-slate-800 p-6 flex flex-col justify-between">
       <div>
         <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-          <h3 class="font-bold text-amber-400">Quick Navigation</h3>
+          <h3 class="font-bold text-amber-400">Navigation</h3>
           <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
         </div>
         <div class="py-4 space-y-4 text-sm font-medium">
-          <a href="#store-section" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-amber-400">All Products</a>
+          <a href="#main-store" onclick="toggleMobileMenu()" class="block py-2 text-slate-200 hover:text-amber-400">All Categories</a>
           <button onclick="toggleMobileMenu(); openPolicy('shipping');" class="block w-full text-left py-2 text-slate-200 hover:text-amber-400">Shipping Policy</button>
           <button onclick="toggleMobileMenu(); openPolicy('returns');" class="block w-full text-left py-2 text-slate-200 hover:text-amber-400">Return & Replacement</button>
           <button onclick="toggleMobileMenu(); openPolicy('privacy');" class="block w-full text-left py-2 text-slate-200 hover:text-amber-400">Privacy Policy</button>
-          <button onclick="toggleMobileMenu(); openPolicy('terms');" class="block w-full text-left py-2 text-slate-200 hover:text-amber-400">Terms & Conditions</button>
         </div>
       </div>
       <button onclick="contactSupport()" class="w-full py-3 bg-green-600 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
-        <i data-lucide="message-circle" class="w-4 h-4"></i> Chat on WhatsApp
+        <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp Support
       </button>
     </div>
   </div>
 
   <!-- MAIN STORE CONTENT -->
-  <main id="store-section" class="max-w-6xl mx-auto px-4 py-6 w-full flex-grow">
+  <main id="main-store" class="max-w-6xl mx-auto px-4 py-6 w-full flex-grow">
     <!-- SEARCH BAR -->
-    <div class="relative mb-6">
+    <div class="relative mb-8">
       <i data-lucide="search" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-400"></i>
-      <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search tempered glass, cases, cables, adapters..." 
+      <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search tempered glass, cases, chargers, cables..." 
         class="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-amber-500 text-sm">
     </div>
 
-    <!-- CATEGORY FILTER PILLS -->
-    <div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar" id="categories-container">
-      <button onclick="selectCategory('All')" class="cat-btn px-4 py-2 bg-amber-500 text-slate-950 rounded-lg text-sm font-semibold whitespace-nowrap">All</button>
-      <button onclick="selectCategory('Accessories')" class="cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap">Accessories</button>
-      <button onclick="selectCategory('Tempered Glass')" class="cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap">Tempered Glass</button>
-      <button onclick="selectCategory('Back Covers')" class="cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap">Back Covers</button>
-      <button onclick="selectCategory('Chargers & Cables')" class="cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap">Chargers & Cables</button>
-    </div>
-
-    <!-- PRODUCTS GRID -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4" id="products-grid">
-      <!-- Injected via JavaScript -->
+    <!-- CATEGORY WISE CONTAINER -->
+    <div id="category-sections-wrapper" class="space-y-10">
+      <!-- Injected dynamically per category -->
     </div>
   </main>
 
-  <!-- PRODUCT DETAIL POPUP -->
+  <!-- PRODUCT DETAIL POPUP (WITH SUGGESTED PRODUCTS) -->
   <div id="product-modal" class="fixed inset-0 z-50 bg-black/80 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full overflow-hidden relative max-h-[90vh] flex flex-col">
       <button onclick="closeProductModal()" class="absolute top-3 right-3 z-10 bg-slate-800/80 p-2 rounded-full text-slate-300 hover:text-white">
         <i data-lucide="x" class="w-5 h-5"></i>
       </button>
-      <div class="overflow-y-auto p-5 space-y-4">
+      
+      <div class="overflow-y-auto p-5 space-y-5">
         <div class="bg-slate-950 rounded-xl overflow-hidden aspect-square max-h-72 w-full flex items-center justify-center">
           <img id="modal-img" src="" alt="Product" class="w-full h-full object-contain">
         </div>
@@ -120,11 +111,23 @@
             <span id="modal-original-price" class="text-sm text-slate-500 line-through"></span>
           </div>
         </div>
+        
         <div class="border-t border-slate-800 pt-3">
-          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Details:</h4>
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Product Details:</h4>
           <p id="modal-desc" class="text-sm text-slate-300 mt-1 leading-relaxed whitespace-pre-line"></p>
         </div>
+
+        <!-- RELATED / SUGGESTED PRODUCTS SECTION -->
+        <div class="border-t border-slate-800 pt-4">
+          <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> You May Also Like
+          </h4>
+          <div id="suggested-products" class="grid grid-cols-3 gap-2">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
       </div>
+
       <div class="p-4 border-t border-slate-800 bg-slate-950 flex gap-2">
         <button id="modal-add-btn" class="flex-1 py-3 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-white rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm">
           <i data-lucide="shopping-bag" class="w-4 h-4"></i> Add to Cart
@@ -136,16 +139,14 @@
     </div>
   </div>
 
-  <!-- POLICIES POPUP MODAL -->
+  <!-- POLICY MODAL -->
   <div id="policy-modal" class="fixed inset-0 z-50 bg-black/80 hidden flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col">
       <div class="p-4 border-b border-slate-800 flex items-center justify-between">
         <h3 id="policy-title" class="text-base font-bold text-amber-400"></h3>
         <button onclick="closePolicyModal()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
       </div>
-      <div id="policy-body" class="p-6 overflow-y-auto text-sm text-slate-300 space-y-3 leading-relaxed">
-        <!-- Injected via JavaScript -->
-      </div>
+      <div id="policy-body" class="p-6 overflow-y-auto text-sm text-slate-300 space-y-3 leading-relaxed"></div>
       <div class="p-4 border-t border-slate-800 bg-slate-950 text-right">
         <button onclick="closePolicyModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-semibold rounded-lg">Close</button>
       </div>
@@ -182,42 +183,36 @@
           <span class="p-1.5 bg-amber-500 rounded text-slate-950"><i data-lucide="smartphone" class="w-4 h-4"></i></span>
           Punjab Mobile Hub
         </h4>
-        <p class="leading-relaxed">Your one-stop destination for quality mobile phone accessories, tempered glass, cases, chargers, and premium replacement parts.</p>
+        <p class="leading-relaxed">Quality mobile accessories, tempered glass, premium covers, adapters and fast data cables at wholesale-friendly prices.</p>
       </div>
       <div>
-        <h4 class="text-white text-sm font-bold mb-3">Quick Links</h4>
-        <ul class="space-y-2 font-medium">
-          <li><a href="#store-section" class="hover:text-amber-400">All Products</a></li>
-          <li><button onclick="selectCategory('Tempered Glass')" class="hover:text-amber-400">Tempered Glass</button></li>
-          <li><button onclick="selectCategory('Back Covers')" class="hover:text-amber-400">Back Covers</button></li>
-          <li><button onclick="selectCategory('Chargers & Cables')" class="hover:text-amber-400">Chargers & Adapters</button></li>
-        </ul>
+        <h4 class="text-white text-sm font-bold mb-3">Shop Categories</h4>
+        <ul class="space-y-2 font-medium" id="footer-categories"></ul>
       </div>
       <div>
-        <h4 class="text-white text-sm font-bold mb-3">Policies & Trust</h4>
+        <h4 class="text-white text-sm font-bold mb-3">Policies & Info</h4>
         <ul class="space-y-2 font-medium">
           <li><button onclick="openPolicy('shipping')" class="hover:text-amber-400">Shipping & Delivery</button></li>
-          <li><button onclick="openPolicy('returns')" class="hover:text-amber-400">Return & Replacement Policy</button></li>
+          <li><button onclick="openPolicy('returns')" class="hover:text-amber-400">Return & Replacement</button></li>
           <li><button onclick="openPolicy('privacy')" class="hover:text-amber-400">Privacy Policy</button></li>
-          <li><button onclick="openPolicy('terms')" class="hover:text-amber-400">Terms of Service</button></li>
         </ul>
       </div>
       <div>
-        <h4 class="text-white text-sm font-bold mb-3">Direct Support</h4>
-        <p class="leading-relaxed mb-3">Have questions about your order or product compatibility? Message us directly.</p>
+        <h4 class="text-white text-sm font-bold mb-3">Contact Support</h4>
+        <p class="leading-relaxed mb-3">Questions regarding orders or model compatibility? Direct chat available.</p>
         <button onclick="contactSupport()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold flex items-center gap-2">
-          <i data-lucide="message-circle" class="w-4 h-4 text-green-400"></i> WhatsApp Support
+          <i data-lucide="message-circle" class="w-4 h-4 text-green-400"></i> WhatsApp Help
         </button>
       </div>
     </div>
     <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
       <p>© 2026 Punjab Mobile Hub. All Rights Reserved.</p>
-      <p class="text-slate-500 text-[11px]">Secure Online Ordering via WhatsApp</p>
+      <p class="text-slate-500 text-[11px]">Direct WhatsApp Order System</p>
     </div>
   </footer>
 
   <script>
-    // 1. PRODUCTS DATA
+    // 1. ALL PRODUCTS DATA
     const products = [
       { 
         id: 1, 
@@ -226,10 +221,19 @@
         price: 199, 
         originalPrice: 399, 
         image: "https://i.ibb.co/b5k00k3Y/IMG-20250814-WA0023.jpg",
-        description: "360-degree rotation phone holder for car dashboard.\n• Strong grip & anti-slip design\n• Compatible with all smartphones\n• Easy single-hand lock & release mechanism."
+        description: "360-degree rotation phone holder for car dashboard.\n• Ultra grip suction & anti-slip design\n• Compatible with all smartphones\n• Easy single-hand lock & release."
       },
       { 
         id: 2, 
+        title: "Foldable Desktop Metal Mobile Stand", 
+        category: "Accessories", 
+        price: 149, 
+        originalPrice: 299, 
+        image: "https://images.unsplash.com/photo-1586105251261-72a756497a11?w=500&q=80",
+        description: "Heavy metal desk stand with adjustable angle.\n• Perfect for video calls and watching media\n• Anti-scratch silicone padding."
+      },
+      { 
+        id: 3, 
         title: "11D Super Edge Full Glue Tempered Glass", 
         category: "Tempered Glass", 
         price: 99, 
@@ -238,111 +242,199 @@
         description: "Edge-to-edge curved screen protection.\n• 9H hardness scratch-proof\n• Oleophobic smooth touch coating\n• Bubble-free installation."
       },
       { 
-        id: 3, 
+        id: 4, 
+        title: "Matte Anti-Glare Privacy Glass (5G Models)", 
+        category: "Tempered Glass", 
+        price: 149, 
+        originalPrice: 299, 
+        image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=500&q=80",
+        description: "High quality privacy protector.\n• Hides screen view from sides\n• Matte finish prevents fingerprint stains and glare."
+      },
+      { 
+        id: 5, 
         title: "Smoke Matte Shockproof Back Cover", 
         category: "Back Covers", 
         price: 149, 
         originalPrice: 299, 
         image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&q=80",
-        description: "Matte translucent back panel with camera bumper ring.\n• Anti-fingerprint and scratch resistant\n• High-grade drop protection cushions."
+        description: "Matte translucent back panel with camera bumper ring.\n• Anti-fingerprint and scratch resistant\n• High-grade drop protection corner cushions."
       },
       { 
-        id: 4, 
+        id: 6, 
+        title: "Liquid Silicone Soft Luxury Case", 
+        category: "Back Covers", 
+        price: 199, 
+        originalPrice: 399, 
+        image: "https://images.unsplash.com/photo-1541877590-a1288c5efb94?w=500&q=80",
+        description: "Velvety inner microfiber lining with premium soft silicone exterior.\n• Full camera covered design."
+      },
+      { 
+        id: 7, 
         title: "65W Fast Charging Adapter Type-C", 
         category: "Chargers & Cables", 
         price: 399, 
         originalPrice: 699, 
         image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500&q=80",
-        description: "Super fast charging power adapter.\n• Supports SuperVOOC, Dart, and Fast QC 3.0\n• Built-in surge and overheating protection."
+        description: "Super fast charging power adapter.\n• Supports SuperVOOC, Dart, QC 3.0\n• In-built surge and overheating safety chip."
+      },
+      { 
+        id: 8, 
+        title: "6A Heavy Braided Fast Data Cable Type-C", 
+        category: "Chargers & Cables", 
+        price: 129, 
+        originalPrice: 249, 
+        image: "https://images.unsplash.com/photo-1616440347437-b1c73416efc2?w=500&q=80",
+        description: "Unbreakable nylon braided fast charging wire.\n• 480Mbps fast data sync & 65W charging support."
       }
     ];
 
-    // SHOP WHATSAPP NUMBER (Apna Actual Number Aithe Pao)
-    const shopWhatsAppNumber = "919779164181";
+    // SHOP WHATSAPP NUMBER
+    const shopWhatsAppNumber = "919876543210";
 
-    let currentCategory = 'All';
     let cart = [];
 
-    // POLICY CONTENTS
     const policies = {
       shipping: {
         title: "Shipping & Delivery Policy",
-        content: `<p>• <strong>Processing Time:</strong> All confirmed orders are dispatched within 24–48 hours.</p>
-                  <p>• <strong>Delivery Timeframe:</strong> Orders are typically delivered within 3–5 working days across Punjab and neighboring states.</p>
-                  <p>• <strong>Tracking:</strong> Tracking details or dispatch updates are shared directly via WhatsApp once the parcel is shipped.</p>`
+        content: `<p>• <strong>Processing:</strong> Orders dispatched within 24-48 working hours.</p>
+                  <p>• <strong>Delivery Time:</strong> 3–5 working days across Punjab and neighboring states.</p>
+                  <p>• <strong>Tracking:</strong> Tracking details sent via WhatsApp upon parcel dispatch.</p>`
       },
       returns: {
         title: "Return & Replacement Policy",
-        content: `<p>• <strong>7-Day Replacement:</strong> If you receive a damaged, broken, or incorrect product, notify us via WhatsApp within 48 hours of delivery.</p>
-                  <p>• <strong>Video Proof:</strong> An unboxing parcel video is recommended for instant damage claims.</p>
-                  <p>• <strong>Refunds/Replacements:</strong> After verification, an immediate free replacement or UPI refund will be issued.</p>`
+        content: `<p>• <strong>7-Day Replacement:</strong> Report damaged or wrong items within 48 hrs of delivery.</p>
+                  <p>• <strong>Video Proof:</strong> An unboxing parcel video helps speed up claims.</p>
+                  <p>• <strong>Instant Support:</strong> Replacement parcel or direct UPI refund initiated upon verification.</p>`
       },
       privacy: {
         title: "Privacy Policy",
-        content: `<p>• <strong>Data Collection:</strong> We only collect basic contact details (name, delivery address, phone number) necessary to fulfill your order.</p>
-                  <p>• <strong>Confidentiality:</strong> Your personal information is strictly protected and never shared or sold to any third party.</p>`
-      },
-      terms: {
-        title: "Terms & Conditions",
-        content: `<p>• Prices are subject to stock availability and active promotional offers.</p>
-                  <p>• Order confirmation is finalized upon WhatsApp communication and address verification.</p>
-                  <p>• Punjab Mobile Hub reserves the right to cancel unverified orders.</p>`
+        content: `<p>• We collect only basic delivery details necessary to process your parcel.</p>
+                  <p>• We never share customer phone numbers or addresses with third parties.</p>`
       }
     };
 
-    function renderProducts() {
-      const grid = document.getElementById('products-grid');
-      const search = document.getElementById('search-input').value.toLowerCase();
-      
-      const filtered = products.filter(p => {
-        const matchCat = (currentCategory === 'All' || p.category === currentCategory);
-        const matchSearch = p.title.toLowerCase().includes(search);
-        return matchCat && matchSearch;
+    // RENDER STORE AS CATEGORY SECTIONS
+    function renderCategorySections(filterSearch = "") {
+      const wrapper = document.getElementById('category-sections-wrapper');
+      wrapper.innerHTML = "";
+
+      // Unique Categories extract karo
+      const categories = [...new Set(products.map(p => p.category))];
+
+      let totalResults = 0;
+
+      categories.forEach(cat => {
+        const catProducts = products.filter(p => {
+          const matchCat = p.category === cat;
+          const matchSearch = filterSearch === "" || p.title.toLowerCase().includes(filterSearch);
+          return matchCat && matchSearch;
+        });
+
+        if (catProducts.length > 0) {
+          totalResults += catProducts.length;
+          const sectionHtml = `
+            <section class="space-y-4">
+              <!-- Section Header -->
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                  <h2 class="text-base sm:text-lg font-bold text-white tracking-wide">${cat}</h2>
+                  <span class="text-xs text-slate-500 font-semibold bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">${catProducts.length} items</span>
+                </div>
+              </div>
+
+              <!-- Product Grid for this Category -->
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                ${catProducts.map(p => `
+                  <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-slate-700 transition">
+                    <div onclick="openProductModal(${p.id})" class="cursor-pointer relative bg-slate-950 aspect-square group">
+                      <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                      <span class="absolute top-2 left-2 bg-amber-500 text-slate-950 font-extrabold text-[10px] px-2 py-0.5 rounded-full">HOT</span>
+                      <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                        <span class="text-xs bg-slate-900/90 text-amber-400 font-semibold px-2 py-1 rounded-md border border-slate-700">Quick View</span>
+                      </div>
+                    </div>
+                    <div class="p-3.5 flex flex-col flex-grow justify-between">
+                      <div onclick="openProductModal(${p.id})" class="cursor-pointer">
+                        <h3 class="text-sm font-semibold text-slate-100 line-clamp-2 mt-1 leading-snug hover:text-amber-400">${p.title}</h3>
+                      </div>
+                      <div class="mt-3">
+                        <div class="flex items-baseline gap-2">
+                          <span class="text-base font-bold text-amber-400">₹${p.price}</span>
+                          <span class="text-xs text-slate-500 line-through">₹${p.originalPrice}</span>
+                        </div>
+                        <button onclick="addToCart(${p.id})" class="w-full mt-2 py-2 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 text-xs font-bold rounded-lg transition">
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </section>
+          `;
+          wrapper.innerHTML += sectionHtml;
+        }
       });
 
-      grid.innerHTML = filtered.map(p => `
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-slate-700 transition">
-          <div onclick="openProductModal(${p.id})" class="cursor-pointer relative bg-slate-950 aspect-square group">
-            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-            <span class="absolute top-2 left-2 bg-amber-500 text-slate-950 font-extrabold text-[10px] px-2 py-0.5 rounded-full">HOT</span>
-            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-              <span class="text-xs bg-slate-900/90 text-amber-400 font-semibold px-2 py-1 rounded-md border border-slate-700">View Details</span>
-            </div>
-          </div>
-          <div class="p-3.5 flex flex-col flex-grow justify-between">
-            <div onclick="openProductModal(${p.id})" class="cursor-pointer">
-              <p class="text-[11px] text-slate-400 font-medium">${p.category}</p>
-              <h3 class="text-sm font-semibold text-slate-100 line-clamp-2 mt-1 leading-snug hover:text-amber-400">${p.title}</h3>
-            </div>
-            <div class="mt-3">
-              <div class="flex items-baseline gap-2">
-                <span class="text-base font-bold text-amber-400">₹${p.price}</span>
-                <span class="text-xs text-slate-500 line-through">₹${p.originalPrice}</span>
-              </div>
-              <button onclick="addToCart(${p.id})" class="w-full mt-2 py-2 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 text-xs font-bold rounded-lg transition">
-                Add to Cart
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join('');
+      if (totalResults === 0) {
+        wrapper.innerHTML = `<p class="text-slate-500 text-center py-12">No products found matching "${filterSearch}".</p>`;
+      }
+
       lucide.createIcons();
     }
 
-    function selectCategory(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.cat-btn').forEach(btn => {
-        if(btn.innerText === cat) {
-          btn.className = "cat-btn px-4 py-2 bg-amber-500 text-slate-950 rounded-lg text-sm font-semibold whitespace-nowrap";
-        } else {
-          btn.className = "cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap";
-        }
-      });
-      renderProducts();
+    function handleSearch() {
+      const q = document.getElementById('search-input').value.toLowerCase().trim();
+      renderCategorySections(q);
     }
 
-    function filterProducts() { renderProducts(); }
+    // PRODUCT MODAL WITH RELATED/SUGGESTED ITEMS
+    function openProductModal(id) {
+      const p = products.find(item => item.id === id);
+      if (!p) return;
 
+      document.getElementById('modal-img').src = p.image;
+      document.getElementById('modal-cat').innerText = p.category;
+      document.getElementById('modal-title').innerText = p.title;
+      document.getElementById('modal-price').innerText = `₹${p.price}`;
+      document.getElementById('modal-original-price').innerText = `₹${p.originalPrice}`;
+      document.getElementById('modal-desc').innerText = p.description || "No extra description provided.";
+
+      // RELATED SUGGESTED PRODUCTS (Same category, excluding current product)
+      const related = products.filter(item => item.category === p.category && item.id !== p.id).slice(0, 3);
+      const suggestedContainer = document.getElementById('suggested-products');
+
+      if (related.length > 0) {
+        suggestedContainer.innerHTML = related.map(rel => `
+          <div onclick="openProductModal(${rel.id})" class="cursor-pointer bg-slate-950 border border-slate-800 p-2 rounded-xl text-center hover:border-amber-500 transition">
+            <img src="${rel.image}" class="w-full aspect-square object-cover rounded-lg mb-1.5">
+            <p class="text-[11px] text-slate-200 font-semibold line-clamp-1">${rel.title}</p>
+            <p class="text-xs font-bold text-amber-400 mt-0.5">₹${rel.price}</p>
+          </div>
+        `).join('');
+      } else {
+        suggestedContainer.innerHTML = `<p class="text-xs text-slate-500 col-span-3">More products coming soon in this category.</p>`;
+      }
+
+      document.getElementById('modal-add-btn').onclick = function() {
+        addToCart(p.id);
+        closeProductModal();
+      };
+      document.getElementById('modal-wa-btn').onclick = function() {
+        const msg = `Hello! I want to order this product:%0A*${p.title}*%0APrice: ₹${p.price}`;
+        window.open(`https://wa.me/${shopWhatsAppNumber}?text=${msg}`, '_blank');
+      };
+
+      document.getElementById('product-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeProductModal() {
+      document.getElementById('product-modal').classList.add('hidden');
+    }
+
+    // CART MANAGEMENT
     function addToCart(id) {
       const item = products.find(p => p.id === id);
       cart.push(item);
@@ -388,31 +480,6 @@
       document.getElementById('mobile-menu').classList.toggle('hidden');
     }
 
-    function openProductModal(id) {
-      const p = products.find(item => item.id === id);
-      if(!p) return;
-      document.getElementById('modal-img').src = p.image;
-      document.getElementById('modal-cat').innerText = p.category;
-      document.getElementById('modal-title').innerText = p.title;
-      document.getElementById('modal-price').innerText = `₹${p.price}`;
-      document.getElementById('modal-original-price').innerText = `₹${p.originalPrice}`;
-      document.getElementById('modal-desc').innerText = p.description || "No extra description provided.";
-      
-      document.getElementById('modal-add-btn').onclick = function() {
-        addToCart(p.id);
-        closeProductModal();
-      };
-      document.getElementById('modal-wa-btn').onclick = function() {
-        const msg = `Hello! I want to order:%0A*${p.title}*%0APrice: ₹${p.price}`;
-        window.open(`https://wa.me/${shopWhatsAppNumber}?text=${msg}`, '_blank');
-      };
-      document.getElementById('product-modal').classList.remove('hidden');
-    }
-
-    function closeProductModal() {
-      document.getElementById('product-modal').classList.add('hidden');
-    }
-
     function openPolicy(type) {
       const data = policies[type];
       if(!data) return;
@@ -426,7 +493,7 @@
     }
 
     function contactSupport() {
-      const msg = "Hello Punjab Mobile Hub! I need support regarding products / orders.";
+      const msg = "Hello Punjab Mobile Hub! I need support regarding products.";
       window.open(`https://wa.me/${shopWhatsAppNumber}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
@@ -439,9 +506,20 @@
       window.open(`https://wa.me/${shopWhatsAppNumber}?text=${msg}`, '_blank');
     }
 
-    // Init
-    renderProducts();
-    updateCartUI();
+    // INIT STORE & FOOTER
+    function init() {
+      renderCategorySections();
+      updateCartUI();
+      
+      // Footer categories
+      const categories = [...new Set(products.map(p => p.category))];
+      const footerCat = document.getElementById('footer-categories');
+      footerCat.innerHTML = categories.map(cat => `
+        <li><span class="text-slate-400">${cat}</span></li>
+      `).join('');
+    }
+
+    init();
   </script>
 </body>
 </html>
