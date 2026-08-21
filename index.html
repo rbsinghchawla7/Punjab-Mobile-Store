@@ -515,62 +515,29 @@
       window.open(`https://wa.me/${shopWhatsAppNumber}?text=${msg}`, '_blank');
     }
 
-  // RENDER ONLY CATEGORIES VIEW (HOMEPAGE)
+  // RENDER STORE PRODUCTS BY CATEGORY (ORIGINAL VIEW)
 function renderCategorySections() {
-    const container = document.getElementById('products-grid') || document.getElementById('products-container') || document.querySelector('main');
-    if (!container) return;
-
     const categories = [...new Set(products.map(p => p.category))];
+    const mainSection = document.querySelector('main') || document.body;
+    let container = document.getElementById('products-container');
     
-    let html = `
-        <div class="p-4 max-w-7xl mx-auto">
-            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-amber-400"></span> Shop by Category
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-    `;
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'products-container';
+        const footer = document.querySelector('footer');
+        if (footer) {
+            mainSection.insertBefore(container, footer);
+        } else {
+            mainSection.appendChild(container);
+        }
+    }
+
+    let fullHtml = '';
 
     categories.forEach(cat => {
         const catProducts = products.filter(p => p.category === cat);
-        const count = catProducts.length;
-        const firstProd = catProducts[0];
-        const imgUrl = firstProd ? firstProd.image : '';
-
-        html += `
-            <div onclick="openCategoryView('${cat}')" class="bg-slate-900 border border-slate-800 rounded-2xl p-3 text-center cursor-pointer hover:border-amber-400 transition-all">
-                <div class="w-full h-32 rounded-xl bg-slate-950 overflow-hidden mb-3">
-                    <img src="${imgUrl}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
-                </div>
-                <h3 class="text-slate-100 font-semibold text-sm mb-1">${cat}</h3>
-                <span class="text-xs text-amber-400 font-medium">${count} Items</span>
-            </div>
-        `;
-    });
-
-    html += `</div></div>`;
-    container.innerHTML = html;
-}
-
-// OPEN SPECIFIC CATEGORY PRODUCTS
-function openCategoryView(catName) {
-    const container = document.getElementById('products-grid') || document.getElementById('products-container') || document.querySelector('main');
-    if (!container) return;
-
-    const filtered = products.filter(p => p.category === catName);
-
-    let html = `
-        <div class="p-4 max-w-7xl mx-auto">
-            <button onclick="renderCategorySections()" class="mb-4 inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-sm font-medium transition cursor-pointer">
-                ← Back to Categories
-            </button>
-            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-amber-400"></span> ${catName} (${filtered.length})
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-    `;
-
-    filtered.forEach(p => {
-        html += `
+        
+        let productsHtml = catProducts.map(p => `
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between">
                 <div>
                     <div class="w-full h-36 rounded-xl bg-slate-950 overflow-hidden mb-3">
@@ -586,19 +553,29 @@ function openCategoryView(catName) {
                     Add to Cart
                 </button>
             </div>
+        `).join('');
+
+        fullHtml += `
+            <div class="p-4 max-w-7xl mx-auto mb-6">
+                <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-amber-400"></span> ${cat}
+                    <span class="text-xs text-slate-500 font-normal">(${catProducts.length} items)</span>
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    ${productsHtml}
+                </div>
+            </div>
         `;
     });
 
-    html += `</div></div>`;
-    container.innerHTML = html;
+    container.innerHTML = fullHtml;
 }
 
 // INIT STORE & FOOTER
 function init() {
     renderCategorySections();
-    updateCartUI();
+    if (typeof updateCartUI === 'function') updateCartUI();
 
-    // Footer categories
     const categories = [...new Set(products.map(p => p.category))];
     const footerCat = document.getElementById('footer-categories');
     if (footerCat) {
