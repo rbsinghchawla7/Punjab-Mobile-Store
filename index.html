@@ -596,10 +596,19 @@ function openCategoryView(catName) {
 // INIT STORE & FOOTER
 function init() {
     renderCategorySections();
-    if (typeof updateCartUI === 'function') updateCartUI();
+    updateCartUI();
+
+    // Footer categories
+    const categories = [...new Set(products.map(p => p.category))];
+    const footerCat = document.getElementById('footer-categories');
+    if (footerCat) {
+        footerCat.innerHTML = categories.map(cat => 
+            `<li><span class="text-slate-400">${cat}</span></li>`
+        ).join('');
+    }
 }
 
-window.onload = init;
+init();
 </script>
 </body>
 </html>
