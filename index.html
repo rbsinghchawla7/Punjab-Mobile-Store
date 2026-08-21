@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Punjab Mobile Hub - Store</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .glass-nav { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen pb-20">
+
+  <!-- TOP NAVBAR -->
+  <header class="sticky top-0 z-40 glass-nav border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="p-2 bg-amber-500 rounded-lg text-slate-950 font-bold text-lg"><i data-lucide="smartphone"></i></span>
+        <div>
+          <h1 class="text-base font-bold leading-tight">Punjab Mobile Hub</h1>
+          <p class="text-xs text-slate-400">Online Store & Accessories</p>
+        </div>
+      </div>
+      <button onclick="toggleCart()" class="relative p-2.5 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition">
+        <i data-lucide="shopping-bag" class="w-5 h-5 text-amber-400"></i>
+        <span id="cart-count" class="absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    <!-- SEARCH BAR -->
+    <div class="relative mb-6">
+      <i data-lucide="search" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-400"></i>
+      <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search tempered glass, back covers, chargers..." 
+        class="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:outline-none focus:border-amber-500 text-sm">
+    </div>
+
+    <!-- CATEGORY FILTER PILLS -->
+    <div class="flex gap-2 overflow-x-auto pb-4 scrollbar-none" id="categories-container">
+      <button onclick="selectCategory('All')" class="cat-btn px-4 py-2 bg-amber-500 text-slate-950 rounded-lg text-sm font-semibold whitespace-nowrap">All</button>
+      <button onclick="selectCategory('Tempered Glass')" class="cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap">Tempered Glass</button>
+      <button onclick="selectCategory('Back Covers')" class="cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap">Back Covers</button>
+      <button onclick="selectCategory('Chargers & Cables')" class="cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap">Chargers & Cables</button>
+      <button onclick="selectCategory('Audio')" class="cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap">Earphones & Audio</button>
+    </div>
+
+    <!-- PRODUCTS GRID -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4" id="products-grid">
+      <!-- Dynamic Products inject honge -->
+    </div>
+  </main>
+
+  <!-- CART DRAWER -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 bg-black/60 hidden transition-opacity">
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-slate-900 border-l border-slate-800 p-6 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+          <h2 class="text-lg font-bold flex items-center gap-2"><i data-lucide="shopping-cart"></i> Your Cart</h2>
+          <button onclick="toggleCart()" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+        </div>
+        <div id="cart-items" class="py-4 space-y-3 max-h-[60vh] overflow-y-auto">
+          <!-- Cart Items -->
+        </div>
+      </div>
+      <div class="border-t border-slate-800 pt-4 space-y-4">
+        <div class="flex justify-between text-base font-bold">
+          <span>Total Amount:</span>
+          <span id="cart-total" class="text-amber-400">₹0</span>
+        </div>
+        <button onclick="checkoutWhatsApp()" class="w-full py-3.5 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-green-950">
+          <i data-lucide="message-circle"></i> Order on WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // PRODUCT DATA (Tusi aithe naye products add/edit kar sakde ho)
+    const products = [
+      { id: 1, title: "11D Super Edge Tempered Glass (5G)", category: "Tempered Glass", price: 99, originalPrice: 199, image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=500&q=80" },
+      { id: 2, title: "Smoke Matte Shockproof Case", category: "Back Covers", price: 149, originalPrice: 299, image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&q=80" },
+      { id: 3, title: "65W Fast Charging Adapter Type-C", category: "Chargers & Cables", price: 399, originalPrice: 699, image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500&q=80" },
+      { id: 4, title: "Braided 6A Fast Data Cable (Type-C)", category: "Chargers & Cables", price: 129, originalPrice: 249, image: "https://images.unsplash.com/photo-1616440347437-b1c73416efc2?w=500&q=80" },
+      { id: 5, title: "Wireless TWS Earbuds with ENC", category: "Audio", price: 599, originalPrice: 1299, image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80" }
+    ];
+
+    let currentCategory = 'All';
+    let cart = [];
+    const shopWhatsAppNumber = "919876543210"; // Apne store da WhatsApp number aithe pao
+
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      const search = document.getElementById('search-input').value.toLowerCase();
+      
+      const filtered = products.filter(p => {
+        const matchCat = (currentCategory === 'All' || p.category === currentCategory);
+        const matchSearch = p.title.toLowerCase().includes(search);
+        return matchCat && matchSearch;
+      });
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-slate-700 transition">
+          <div class="relative bg-slate-950 aspect-square">
+            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">
+            <span class="absolute top-2 left-2 bg-amber-500 text-slate-950 font-extrabold text-[10px] px-2 py-0.5 rounded-full">HOT</span>
+          </div>
+          <div class="p-3.5 flex flex-col flex-grow justify-between">
+            <div>
+              <p class="text-[11px] text-slate-400 font-medium">${p.category}</p>
+              <h3 class="text-sm font-semibold text-slate-100 line-clamp-2 mt-1 leading-snug">${p.title}</h3>
+            </div>
+            <div class="mt-3">
+              <div class="flex items-baseline gap-2">
+                <span class="text-base font-bold text-amber-400">₹${p.price}</span>
+                <span class="text-xs text-slate-500 line-through">₹${p.originalPrice}</span>
+              </div>
+              <button onclick="addToCart(${p.id})" class="w-full mt-2 py-2 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 text-xs font-bold rounded-lg transition">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function selectCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if(btn.innerText === cat) {
+          btn.className = "cat-btn px-4 py-2 bg-amber-500 text-slate-950 rounded-lg text-sm font-semibold whitespace-nowrap";
+        } else {
+          btn.className = "cat-btn px-4 py-2 bg-slate-900 border border-slate-800 text-slate-300 rounded-lg text-sm font-semibold whitespace-nowrap";
+        }
+      });
+      renderProducts();
+    }
+
+    function filterProducts() { renderProducts(); }
+
+    function addToCart(id) {
+      const item = products.find(p => p.id === id);
+      cart.push(item);
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      document.getElementById('cart-count').innerText = cart.length;
+      const cartItems = document.getElementById('cart-items');
+      const total = cart.reduce((acc, curr) => acc + curr.price, 0);
+      document.getElementById('cart-total').innerText = `₹${total}`;
+
+      if(cart.length === 0) {
+        cartItems.innerHTML = `<p class="text-sm text-slate-500 text-center py-6">Your cart is empty.</p>`;
+        return;
+      }
+
+      cartItems.innerHTML = cart.map((item, index) => `
+        <div class="flex items-center justify-between p-3 bg-slate-950 border border-slate-800 rounded-xl">
+          <div class="flex items-center gap-3">
+            <img src="${item.image}" class="w-10 h-10 rounded-lg object-cover">
+            <div>
+              <p class="text-xs font-semibold text-slate-200 line-clamp-1">${item.title}</p>
+              <p class="text-xs text-amber-400 font-bold">₹${item.price}</p>
+            </div>
+          </div>
+          <button onclick="removeFromCart(${index})" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function toggleCart() {
+      const drawer = document.getElementById('cart-drawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    function checkoutWhatsApp() {
+      if(cart.length === 0) { alert('Cart is empty!'); return; }
+      let msg = "Hello Punjab Mobile Hub! I want to order:%0A%0A";
+      cart.forEach((i, idx) => { msg += `${idx + 1}. ${i.title} - ₹${i.price}%0A`; });
+      const total = cart.reduce((acc, curr) => acc + curr.price, 0);
+      msg += `%0A*Total Amount: ₹${total}*%0APlease confirm my order.`;
+      window.open(`https://wa.me/${shopWhatsAppNumber}?text=${msg}`, '_blank');
+    }
+
+    // Init
+    renderProducts();
+    updateCartUI();
+  </script>
+</body>
+</html>
