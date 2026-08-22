@@ -13,7 +13,6 @@
             background-color: #020617;
             color: #f8fafc;
         }
-        /* Smooth Horizontal Scroll without scrollbars */
         .products-horizontal-scroll {
             display: flex;
             gap: 12px;
@@ -27,7 +26,6 @@
         .products-horizontal-scroll::-webkit-scrollbar {
             display: none;
         }
-        /* Product Card Width */
         .product-card-snap {
             flex: 0 0 160px;
             min-width: 160px;
@@ -39,7 +37,6 @@
                 min-width: 200px;
             }
         }
-        /* Moving Swipe Hint Animation */
         @keyframes handSwipeAnim {
             0%, 100% { transform: translateX(0); opacity: 0.6; }
             50% { transform: translateX(5px); opacity: 1; }
@@ -56,9 +53,16 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <!-- TOP ANNOUNCEMENT -->
-    <div class="bg-amber-500 text-slate-950 text-center py-1.5 px-4 text-xs font-bold tracking-wide">
-        🚀 Fast Shipping Across Punjab & All India | 100% Quality Tested!
+    <!-- TOP ANNOUNCEMENT & POLICY LINKS -->
+    <div class="bg-amber-500 text-slate-950 px-4 py-1.5 text-xs font-bold flex flex-wrap items-center justify-between gap-2">
+        <span>🚀 Fast Shipping Across Punjab & All India | 100% Quality Tested!</span>
+        <div class="flex items-center gap-3 text-[11px] font-semibold">
+            <button onclick="openPolicyModal('shipping')" class="hover:underline">Shipping</button>
+            <span>•</span>
+            <button onclick="openPolicyModal('returns')" class="hover:underline">Returns</button>
+            <span>•</span>
+            <button onclick="openPolicyModal('privacy')" class="hover:underline">Privacy</button>
+        </div>
     </div>
 
     <!-- NAVBAR -->
@@ -92,12 +96,19 @@
 
     <!-- MAIN PRODUCT CONTAINER -->
     <main id="category-sections-wrapper" class="max-w-7xl mx-auto w-full p-4 space-y-6">
-        <!-- Javascript renders categories here -->
     </main>
 
     <!-- PRODUCT DETAIL POPUP MODAL -->
     <div id="product-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
-        <!-- Javascript renders dynamic details here -->
+    </div>
+
+    <!-- POLICY POPUP MODAL -->
+    <div id="policy-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 relative">
+            <button onclick="closePolicyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center">✕</button>
+            <h3 id="policy-title" class="text-white font-bold text-lg mb-3"></h3>
+            <div id="policy-body" class="text-slate-300 text-xs leading-relaxed space-y-2"></div>
+        </div>
     </div>
 
     <!-- CART SLIDE DRAWER -->
@@ -111,7 +122,6 @@
                     <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-sm bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center">✕</button>
                 </div>
                 <div id="cart-items" class="py-4 space-y-3 max-h-[60vh] overflow-y-auto">
-                    <!-- Javascript Cart Items -->
                 </div>
             </div>
             <div class="border-t border-slate-800 pt-4 space-y-4">
@@ -139,14 +149,17 @@
             <div>
                 <h4 class="text-white text-sm font-bold mb-3">Categories</h4>
                 <ul id="footer-categories" class="space-y-1.5 font-medium">
-                    <!-- Dynamic categories -->
                 </ul>
             </div>
             <div>
-                <h4 class="text-white text-sm font-bold mb-3">Support</h4>
-                <p class="mb-2">Need help with an item or order?</p>
+                <h4 class="text-white text-sm font-bold mb-3">Policies & Support</h4>
+                <div class="flex flex-col gap-1.5 mb-3">
+                    <button onclick="openPolicyModal('shipping')" class="text-left hover:text-amber-400 transition">Shipping Policy</button>
+                    <button onclick="openPolicyModal('returns')" class="text-left hover:text-amber-400 transition">Return & Replacement</button>
+                    <button onclick="openPolicyModal('privacy')" class="text-left hover:text-amber-400 transition">Privacy Policy</button>
+                </div>
                 <button onclick="contactSupport()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-xl border border-slate-700 flex items-center gap-2 transition text-xs font-semibold">
-                    <i data-lucide="help-circle" class="w-4 h-4 text-amber-400"></i> Contact on WhatsApp
+                    <i data-lucide="help-circle" class="w-4 h-4 text-amber-400"></i> Contact Support
                 </button>
             </div>
         </div>
@@ -157,9 +170,25 @@
 
     <!-- LOGIC SCRIPT -->
     <script>
-        const shopWhatsAppNumber = "919876543210"; // <-- Tuhada WhatsApp Number
+        const shopWhatsAppNumber = "919876543210"; // <-- WhatsApp Number
 
-        // PRODUCTS DATABASE (Support Single Image, Multi Images, Description & Tags)
+        // POLICIES DATA
+        const policiesData = {
+            shipping: {
+                title: "Shipping & Delivery Policy",
+                content: "<p>• <strong>Fast Dispatch:</strong> Orders are dispatched within 24 hours of confirmation.</p><p>• <strong>Delivery Time:</strong> 2 to 4 working days across Punjab and 4 to 6 days across India.</p><p>• <strong>Tracking:</strong> Tracking details are sent directly to your WhatsApp once dispatched.</p>"
+            },
+            returns: {
+                title: "Return & Replacement Policy",
+                content: "<p>• <strong>Testing Warranty:</strong> 48 hours checking warranty upon parcel delivery.</p><p>• <strong>Replacements:</strong> In case of defective or damaged items during transit, immediate replacement is provided.</p><p>• <strong>Unboxing Video:</strong> Please record a simple unboxing video for faster claims.</p>"
+            },
+            privacy: {
+                title: "Privacy Policy",
+                content: "<p>• We only collect essential customer details (Name, Address, Phone Number) needed to deliver your parcel.</p><p>• Your personal details and contact numbers are 100% secure and never shared with third parties.</p>"
+            }
+        };
+
+        // PRODUCTS DATABASE
         const products = [
             {
                 id: 1,
@@ -168,11 +197,9 @@
                 price: 299,
                 originalPrice: 699,
                 image: "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=400&q=80",
-                images: [
-                    "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=400&q=80"
-                ],
+                images: ["https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=400&q=80"],
                 tags: ["car holder", "mobile stand", "dashboard"],
-                description: "• 360 Degree Rotatable Head\n• Strong Vacuum Suction Pad\n• Compatible with all 4.7 to 7.0 inch smartphones"
+                description: "• 360 Degree Rotatable Head\n• Strong Vacuum Suction Pad\n• Compatible with all smartphones"
             },
             {
                 id: 2,
@@ -182,7 +209,7 @@
                 originalPrice: 1299,
                 image: "./rocklites141.jpeg",
                 tags: ["speaker", "bluetooth", "rocklight"],
-                description: "• High Bass & Crystal Clear Sound\n• Long-lasting Battery Backup\n• USB / TF Card / FM Supported"
+                description: "• High Bass & Clear Sound\n• Long-lasting Battery Backup\n• USB / TF / FM Supported"
             },
             {
                 id: 3,
@@ -202,13 +229,13 @@
                 originalPrice: 399,
                 image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&q=80",
                 tags: ["tempered glass", "screen guard", "9d glass"],
-                description: "• Edge-to-edge Protection\n• Scratch Resistant 9H Hardness\n• Smooth Touch & High Transparency"
+                description: "• Edge-to-edge Protection\n• Scratch Resistant 9H Hardness\n• High Touch Sensitivity"
             }
         ];
 
         let cart = [];
 
-        // RENDER PRODUCTS BY CATEGORY (SWIPE ROW)
+        // RENDER PRODUCTS AUTOMATICALLY BY CATEGORY
         function renderCategorySections(filterSearch = "") {
             const wrapper = document.getElementById('category-sections-wrapper');
             if (!wrapper) return;
@@ -274,12 +301,12 @@
             lucide.createIcons();
         }
 
-        // SEARCH HANDLER
+        // SEARCH
         function handleSearch(val) {
             renderCategorySections(val);
         }
 
-        // PRODUCT DETAILS MODAL (Description + Images Gallery + Tags)
+        // PRODUCT DETAIL POPUP
         function openProductModal(id) {
             const p = products.find(prod => prod.id === id);
             if (!p) return;
@@ -335,10 +362,22 @@
             document.getElementById('product-modal').classList.add('hidden');
         }
 
+        // POLICIES POPUP
+        function openPolicyModal(type) {
+            const data = policiesData[type];
+            if (!data) return;
+            document.getElementById('policy-title').innerText = data.title;
+            document.getElementById('policy-body').innerHTML = data.content;
+            document.getElementById('policy-modal').classList.remove('hidden');
+        }
+
+        function closePolicyModal() {
+            document.getElementById('policy-modal').classList.add('hidden');
+        }
+
         // CART LOGIC
         function toggleCart() {
-            const drawer = document.getElementById('cart-drawer');
-            drawer.classList.toggle('hidden');
+            document.getElementById('cart-drawer').classList.toggle('hidden');
         }
 
         function addToCart(id) {
@@ -396,12 +435,11 @@
             window.open(`https://wa.me/${shopWhatsAppNumber}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // INITIALIZE STORE
+        // INITIALIZE
         function init() {
             renderCategorySections();
             updateCartUI();
 
-            // Populate Footer Categories
             const categories = [...new Set(products.map(p => p.category))];
             const footerCat = document.getElementById('footer-categories');
             if (footerCat) {
