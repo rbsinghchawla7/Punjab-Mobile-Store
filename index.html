@@ -69,7 +69,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-16">
 
-    <!-- TOP ANNOUNCEMENT & POLICY LINKS -->
+    <!-- TOP ANNOUNCEMENT & POLICIES -->
     <div class="bg-amber-500 text-slate-950 px-4 py-1.5 text-xs font-bold flex flex-wrap items-center justify-between gap-2">
         <span id="top-announcement-text">🚀 Fast Shipping Across Punjab & All India | 100% Quality Tested!</span>
         <div class="flex items-center gap-3 text-[11px] font-semibold">
@@ -97,7 +97,7 @@
                     type="text" 
                     id="search-input" 
                     oninput="handleSearch(this.value)" 
-                    placeholder="Search glass, cases, speakers..." 
+                    placeholder="Search accessories, speakers..." 
                     class="w-full bg-slate-950 border border-slate-700 rounded-full px-4 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
                 >
             </div>
@@ -200,19 +200,14 @@
         </div>
     </footer>
 
-    <!-- LOGIC SCRIPT -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        const shopWhatsAppNumber = "919876543210"; // <-- WhatsApp Number
+        const shopWhatsAppNumber = "919876543210"; // <-- Apna WhatsApp Number
         const SECRET_WHOLESALE_PASS = "77";        // <-- Secret Password
 
-        // CHECK IF WHOLESALE IS ACTIVE
+        // Mode Check: Sirf URL vich `?b2b=77` hon te hi wholesale activate hovega
         const urlParams = new URLSearchParams(window.location.search);
-        let isWholesale = localStorage.getItem('pmh_wholesale_auth') === 'true';
-
-        if (urlParams.get('b2b') === SECRET_WHOLESALE_PASS || urlParams.get('pass') === SECRET_WHOLESALE_PASS) {
-            isWholesale = true;
-            localStorage.setItem('pmh_wholesale_auth', 'true');
-        }
+        const isWholesale = (urlParams.get('b2b') === SECRET_WHOLESALE_PASS || urlParams.get('pass') === SECRET_WHOLESALE_PASS);
 
         const policiesData = {
             shipping: {
@@ -230,28 +225,28 @@
         };
 
         // PRODUCTS DATABASE
-        // type: "all" (Default - dono nu dikhega)
-        // type: "retail" (Sirf Retail nu dikhega)
-        // type: "wholesale" (Sirf Wholesale buyer nu dikhega)
+        // visibility: "both" (Retail + Wholesale dona nu dikhega)
+        // visibility: "retail_only" (Sirf retail normal site te dikhega)
+        // visibility: "wholesale_only" (Sirf ?b2b=77 wale link te hi dikhega)
         const products = [
             {
                 id: 1,
                 title: "Dashboard Mobile Holder 360°",
                 category: "Mobile Accessories",
-                type: "all",
+                visibility: "both",
                 price: 299,
                 wholesalePrice: 135,
                 originalPrice: 699,
                 image: "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=400&q=80",
                 images: ["https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=400&q=80"],
                 tags: ["car holder", "mobile stand", "dashboard"],
-                description: "• 360 Degree Rotatable Head\n• Strong Vacuum Suction Pad\n• Compatible with all smartphones"
+                description: "• 360 Degree Rotatable Head\n• Strong Vacuum Suction Pad\n• Fits all smartphones"
             },
             {
                 id: 2,
                 title: "Rocklight S141 Bluetooth Speaker",
                 category: "Bluetooth Speakers",
-                type: "all",
+                visibility: "both",
                 price: 590,
                 wholesalePrice: 340,
                 originalPrice: 1299,
@@ -261,10 +256,11 @@
             },
             {
                 id: 3,
-                title: "Sultan BT843 Wireless Speaker (Retail Special)",
+                title: "Sultan BT843 Wireless Speaker",
                 category: "Bluetooth Speakers",
-                type: "retail", // <--- Sirf Retail Graahkan layi
+                visibility: "both",
                 price: 1400,
+                wholesalePrice: 850,
                 originalPrice: 2900,
                 image: "./sultan-speaker.jpeg",
                 tags: ["sultan", "wireless speaker", "heavy bass"],
@@ -272,31 +268,42 @@
             },
             {
                 id: 4,
-                title: "Super D 9D Tempered Glass (Lot Pack of 100)",
+                title: "Super D 9D Tempered Glass Guard",
                 category: "Tempered Glass",
-                type: "wholesale", // <--- Sirf Wholesale Dukandaran layi
-                price: 9999, // Normal price (kise nu nahi dikhna)
-                wholesalePrice: 2800, // 100 pcs pack rate
-                originalPrice: 4900,
+                visibility: "retail_only", // <-- Sirf retail grahak layi
+                price: 149,
+                originalPrice: 399,
                 image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&q=80",
-                tags: ["tempered glass", "screen guard", "lot", "wholesale pack"],
-                description: "• 100 Pcs Mix Lot (Hot Running Models)\n• 9H Edge to Edge Guard\n• Safe Bubble Packaging"
+                tags: ["tempered glass", "screen guard", "9d glass"],
+                description: "• Edge-to-edge Protection\n• Scratch Resistant 9H Hardness\n• High Touch Sensitivity"
+            },
+            {
+                id: 5,
+                title: "Super D 9D Glass Lot Pack (100 Pcs)",
+                category: "Tempered Glass",
+                visibility: "wholesale_only", // <-- Sirf secret link ?b2b=77 te dikhega
+                price: 9999,
+                wholesalePrice: 2800,
+                originalPrice: 4500,
+                image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&q=80",
+                tags: ["tempered glass", "lot pack", "100 pcs"],
+                description: "• 100 Pcs Mix Running Models\n• Wholesale Box Packaging\n• Heavy Margin for Retailers"
             }
         ];
 
         let cart = [];
 
-        // Check if product is visible according to user mode
-        function isProductVisible(p) {
-            const productType = p.type || "all";
+        // Exact Filtering Rules
+        function isVisible(p) {
+            const vis = p.visibility || "both";
             if (isWholesale) {
-                return productType === "all" || productType === "wholesale";
+                return (vis === "both" || vis === "wholesale_only");
             } else {
-                return productType === "all" || productType === "retail";
+                return (vis === "both" || vis === "retail_only");
             }
         }
 
-        function getActivePrice(p) {
+        function getPrice(p) {
             return (isWholesale && p.wholesalePrice) ? p.wholesalePrice : p.price;
         }
 
@@ -305,17 +312,16 @@
             if (!wrapper) return;
             wrapper.innerHTML = "";
 
-            // Sirf visible products diyaan categories filter karo
-            const visibleProducts = products.filter(isProductVisible);
-            const categories = [...new Set(visibleProducts.map(p => p.category))];
+            const activeProducts = products.filter(isVisible);
+            const categories = [...new Set(activeProducts.map(p => p.category))];
             let totalFound = 0;
 
             categories.forEach(cat => {
-                const catProducts = visibleProducts.filter(p => {
+                const catProducts = activeProducts.filter(p => {
                     const matchCat = p.category === cat;
-                    const searchLower = filterSearch.toLowerCase().trim();
-                    const matchTitle = p.title.toLowerCase().includes(searchLower);
-                    const matchTags = p.tags ? p.tags.some(t => t.toLowerCase().includes(searchLower)) : false;
+                    const s = filterSearch.toLowerCase().trim();
+                    const matchTitle = p.title.toLowerCase().includes(s);
+                    const matchTags = p.tags ? p.tags.some(t => t.toLowerCase().includes(s)) : false;
                     return matchCat && (filterSearch === "" || matchTitle || matchTags);
                 });
 
@@ -323,7 +329,7 @@
                     totalFound += catProducts.length;
 
                     const productsHtml = catProducts.map(p => {
-                        const currentPrice = getActivePrice(p);
+                        const itemPrice = getPrice(p);
                         return `
                             <div class="product-card-snap bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between cursor-pointer hover:border-slate-700 transition" onclick="openProductModal(${p.id})">
                                 <div>
@@ -332,7 +338,7 @@
                                     </div>
                                     <h4 class="text-slate-200 font-semibold text-xs line-clamp-2 mb-1">${p.title}</h4>
                                     <div class="flex items-center gap-2 mb-2">
-                                        <span class="text-amber-400 font-bold text-sm">₹${currentPrice}</span>
+                                        <span class="text-amber-400 font-bold text-sm">₹${itemPrice}</span>
                                         <span class="text-slate-500 line-through text-xs">₹${p.originalPrice}</span>
                                     </div>
                                 </div>
@@ -376,13 +382,13 @@
 
         function openProductModal(id, updateHash = true) {
             const p = products.find(prod => prod.id === id);
-            if (!p || !isProductVisible(p)) return;
+            if (!p || !isVisible(p)) return;
 
             if (updateHash) {
                 window.location.hash = `product-${p.id}`;
             }
 
-            const currentPrice = getActivePrice(p);
+            const itemPrice = getPrice(p);
             const modal = document.getElementById('product-modal');
             const allImages = (p.images && p.images.length > 0) ? p.images : [p.image];
 
@@ -412,7 +418,7 @@
 
                     <h3 class="text-white font-bold text-base mt-3">${p.title}</h3>
                     <div class="flex items-center gap-2 my-2">
-                        <span class="text-amber-400 font-bold text-lg">₹${currentPrice}</span>
+                        <span class="text-amber-400 font-bold text-lg">₹${itemPrice}</span>
                         <span class="text-slate-500 line-through text-sm">₹${p.originalPrice}</span>
                     </div>
 
@@ -476,9 +482,9 @@
 
         function addToCart(id) {
             const p = products.find(item => item.id === id);
-            if (!p || !isProductVisible(p)) return;
+            if (!p || !isVisible(p)) return;
             
-            const effectivePrice = getActivePrice(p);
+            const effectivePrice = getPrice(p);
             cart.push({ ...p, activePrice: effectivePrice });
             updateCartUI();
         }
@@ -563,9 +569,8 @@
             renderCategorySections();
             updateCartUI();
 
-            // Footer categories vi sirf visible products de hisaab naal banange
-            const visibleProducts = products.filter(isProductVisible);
-            const categories = [...new Set(visibleProducts.map(p => p.category))];
+            const activeProducts = products.filter(isVisible);
+            const categories = [...new Set(activeProducts.map(p => p.category))];
             const footerCat = document.getElementById('footer-categories');
             if (footerCat) {
                 footerCat.innerHTML = categories.map(cat => 
