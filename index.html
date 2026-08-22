@@ -13,6 +13,50 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
+  <style>
+/* Horizontal scroll smooth banaunda hai */
+.products-horizontal-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.products-horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* Product Card Width */
+.product-card-snap {
+    flex: 0 0 160px;
+    min-width: 160px;
+    scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+    .product-card-snap {
+        flex: 0 0 200px;
+        min-width: 200px;
+    }
+}
+
+/* Moving Hand Animation */
+@keyframes handSwipeAnim {
+    0%, 100% { transform: translateX(0); opacity: 0.6; }
+    50% { transform: translateX(5px); opacity: 1; }
+}
+.swipe-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #fbbf24;
+    animation: handSwipeAnim 1.2s ease-in-out infinite;
+}
+</style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
 
