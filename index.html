@@ -49,9 +49,29 @@
             color: #fbbf24;
             animation: handSwipeAnim 1.2s ease-in-out infinite;
         }
+
+        /* Cart Active Bounce & Glow Animation */
+        @keyframes cartGlowPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 rgba(245, 158, 11, 0); }
+            50% { transform: scale(1.08); box-shadow: 0 0 14px rgba(245, 158, 11, 0.6); }
+        }
+        .cart-active-anim {
+            animation: cartGlowPulse 1.4s infinite ease-in-out;
+            background-color: #f59e0b !important;
+            color: #020617 !important;
+        }
+
+        /* Floating Checkout Bar Slide Up */
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-up {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between pb-16">
 
     <!-- TOP ANNOUNCEMENT & POLICY LINKS -->
     <div class="bg-amber-500 text-slate-950 px-4 py-1.5 text-xs font-bold flex flex-wrap items-center justify-between gap-2">
@@ -87,7 +107,7 @@
             </div>
 
             <!-- CART BUTTON -->
-            <button onclick="toggleCart()" class="relative bg-slate-800 hover:bg-slate-700 text-white p-2.5 rounded-full border border-slate-700 transition">
+            <button id="nav-cart-btn" onclick="toggleCart()" class="relative bg-slate-800 hover:bg-slate-700 text-white p-2.5 rounded-full border border-slate-700 transition">
                 <i data-lucide="shopping-bag" class="w-5 h-5"></i>
                 <span id="cart-count" class="absolute -top-1 -right-1 bg-amber-500 text-slate-950 font-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-900">0</span>
             </button>
@@ -97,6 +117,22 @@
     <!-- MAIN PRODUCT CONTAINER -->
     <main id="category-sections-wrapper" class="max-w-7xl mx-auto w-full p-4 space-y-6">
     </main>
+
+    <!-- FLOATING PROCEED TO CHECKOUT BAR -->
+    <div id="floating-checkout-bar" class="fixed bottom-3 inset-x-4 max-w-md mx-auto z-40 hidden animate-slide-up">
+        <div onclick="toggleCart()" class="bg-amber-500 text-slate-950 p-3.5 rounded-2xl shadow-2xl flex items-center justify-between cursor-pointer border border-amber-400 font-bold hover:bg-amber-400 transition">
+            <div class="flex items-center gap-2.5">
+                <span id="floating-cart-count" class="bg-slate-950 text-amber-400 text-xs px-2.5 py-1 rounded-lg font-black">0</span>
+                <div>
+                    <div class="text-xs text-slate-900">Proceed to Checkout</div>
+                    <div id="floating-cart-total" class="text-sm font-extrabold leading-none">₹0</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-1.5 text-xs font-black bg-slate-950 text-white px-3.5 py-2 rounded-xl">
+                View Cart <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </div>
+        </div>
+    </div>
 
     <!-- PRODUCT DETAIL POPUP MODAL -->
     <div id="product-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
@@ -302,7 +338,6 @@
             renderCategorySections(val);
         }
 
-        // PRODUCT DETAIL POPUP WITH SHARE BUTTON
         function openProductModal(id, updateHash = true) {
             const p = products.find(prod => prod.id === id);
             if (!p) return;
@@ -369,7 +404,6 @@
             document.getElementById('product-modal').classList.add('hidden');
         }
 
-        // SHARE PRODUCT LINK GENERATOR
         function shareProduct(id) {
             const p = products.find(prod => prod.id === id);
             if (!p) return;
@@ -387,7 +421,6 @@
             }
         }
 
-        // POLICIES POPUP
         function openPolicyModal(type) {
             const data = policiesData[type];
             if (!data) return;
@@ -400,7 +433,7 @@
             document.getElementById('policy-modal').classList.add('hidden');
         }
 
-        // CART LOGIC
+        // CART MANAGEMENT & ANIMATION LOGIC
         function toggleCart() {
             document.getElementById('cart-drawer').classList.toggle('hidden');
         }
@@ -418,9 +451,27 @@
         }
 
         function updateCartUI() {
-            document.getElementById('cart-count').innerText = cart.length;
+            const navCartBtn = document.getElementById('nav-cart-btn');
+            const floatingBar = document.getElementById('floating-checkout-bar');
+            const cartCountElem = document.getElementById('cart-count');
             const cartItems = document.getElementById('cart-items');
-            
+            const total = cart.reduce((acc, curr) => acc + curr.price, 0);
+
+            cartCountElem.innerText = cart.length;
+
+            if (cart.length > 0) {
+                // Animate Top Navbar Cart Button
+                navCartBtn.classList.add('cart-active-anim');
+                
+                // Show Floating "Proceed to Checkout" Bar
+                floatingBar.classList.remove('hidden');
+                document.getElementById('floating-cart-count').innerText = `${cart.length} item${cart.length > 1 ? 's' : ''}`;
+                document.getElementById('floating-cart-total').innerText = `₹${total}`;
+            } else {
+                navCartBtn.classList.remove('cart-active-anim');
+                floatingBar.classList.add('hidden');
+            }
+
             if (cart.length === 0) {
                 cartItems.innerHTML = `<div class="text-center py-10 text-slate-500 text-xs">Your cart is empty</div>`;
             } else {
@@ -438,7 +489,6 @@
                 `).join('');
             }
 
-            const total = cart.reduce((acc, curr) => acc + curr.price, 0);
             document.getElementById('cart-total').innerText = `₹${total}`;
             lucide.createIcons();
         }
@@ -460,7 +510,6 @@
             window.open(`https://wa.me/${shopWhatsAppNumber}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // INITIALIZE & CHECK URL HASH FOR DIRECT PRODUCT LINK
         function init() {
             renderCategorySections();
             updateCartUI();
@@ -473,7 +522,6 @@
                 ).join('');
             }
 
-            // Check if URL has product hash (e.g. #product-2)
             if (window.location.hash.includes('#product-')) {
                 const prodId = parseInt(window.location.hash.replace('#product-', ''));
                 if (prodId) {
