@@ -202,7 +202,7 @@
 
     <!-- LOGIC SCRIPT -->
     <script>
-        const shopWhatsAppNumber = "919779164181"; // <-- WhatsApp Number
+        const shopWhatsAppNumber = "919876543210"; // <-- WhatsApp Number
         const SECRET_WHOLESALE_PASS = "77";        // <-- Secret Password
 
         // CHECK IF WHOLESALE IS ACTIVE
@@ -229,12 +229,16 @@
             }
         };
 
-        // PRODUCTS DATABASE (Includes Wholesale Pricing)
+        // PRODUCTS DATABASE
+        // type: "all" (Default - dono nu dikhega)
+        // type: "retail" (Sirf Retail nu dikhega)
+        // type: "wholesale" (Sirf Wholesale buyer nu dikhega)
         const products = [
             {
                 id: 1,
                 title: "Dashboard Mobile Holder 360°",
                 category: "Mobile Accessories",
+                type: "all",
                 price: 299,
                 wholesalePrice: 135,
                 originalPrice: 699,
@@ -247,6 +251,7 @@
                 id: 2,
                 title: "Rocklight S141 Bluetooth Speaker",
                 category: "Bluetooth Speakers",
+                type: "all",
                 price: 590,
                 wholesalePrice: 340,
                 originalPrice: 1299,
@@ -256,10 +261,10 @@
             },
             {
                 id: 3,
-                title: "Sultan BT843 Wireless Speaker",
+                title: "Sultan BT843 Wireless Speaker (Retail Special)",
                 category: "Bluetooth Speakers",
+                type: "retail", // <--- Sirf Retail Graahkan layi
                 price: 1400,
-                wholesalePrice: 850,
                 originalPrice: 2900,
                 image: "./sultan-speaker.jpeg",
                 tags: ["sultan", "wireless speaker", "heavy bass"],
@@ -267,18 +272,29 @@
             },
             {
                 id: 4,
-                title: "Super D 9D Tempered Glass Guard",
+                title: "Super D 9D Tempered Glass (Lot Pack of 100)",
                 category: "Tempered Glass",
-                price: 149,
-                wholesalePrice: 38,
-                originalPrice: 399,
+                type: "wholesale", // <--- Sirf Wholesale Dukandaran layi
+                price: 9999, // Normal price (kise nu nahi dikhna)
+                wholesalePrice: 2800, // 100 pcs pack rate
+                originalPrice: 4900,
                 image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&q=80",
-                tags: ["tempered glass", "screen guard", "9d glass"],
-                description: "• Edge-to-edge Protection\n• Scratch Resistant 9H Hardness\n• High Touch Sensitivity"
+                tags: ["tempered glass", "screen guard", "lot", "wholesale pack"],
+                description: "• 100 Pcs Mix Lot (Hot Running Models)\n• 9H Edge to Edge Guard\n• Safe Bubble Packaging"
             }
         ];
 
         let cart = [];
+
+        // Check if product is visible according to user mode
+        function isProductVisible(p) {
+            const productType = p.type || "all";
+            if (isWholesale) {
+                return productType === "all" || productType === "wholesale";
+            } else {
+                return productType === "all" || productType === "retail";
+            }
+        }
 
         function getActivePrice(p) {
             return (isWholesale && p.wholesalePrice) ? p.wholesalePrice : p.price;
@@ -289,11 +305,13 @@
             if (!wrapper) return;
             wrapper.innerHTML = "";
 
-            const categories = [...new Set(products.map(p => p.category))];
+            // Sirf visible products diyaan categories filter karo
+            const visibleProducts = products.filter(isProductVisible);
+            const categories = [...new Set(visibleProducts.map(p => p.category))];
             let totalFound = 0;
 
             categories.forEach(cat => {
-                const catProducts = products.filter(p => {
+                const catProducts = visibleProducts.filter(p => {
                     const matchCat = p.category === cat;
                     const searchLower = filterSearch.toLowerCase().trim();
                     const matchTitle = p.title.toLowerCase().includes(searchLower);
@@ -358,7 +376,7 @@
 
         function openProductModal(id, updateHash = true) {
             const p = products.find(prod => prod.id === id);
-            if (!p) return;
+            if (!p || !isProductVisible(p)) return;
 
             if (updateHash) {
                 window.location.hash = `product-${p.id}`;
@@ -458,7 +476,7 @@
 
         function addToCart(id) {
             const p = products.find(item => item.id === id);
-            if (!p) return;
+            if (!p || !isProductVisible(p)) return;
             
             const effectivePrice = getActivePrice(p);
             cart.push({ ...p, activePrice: effectivePrice });
@@ -545,7 +563,9 @@
             renderCategorySections();
             updateCartUI();
 
-            const categories = [...new Set(products.map(p => p.category))];
+            // Footer categories vi sirf visible products de hisaab naal banange
+            const visibleProducts = products.filter(isProductVisible);
+            const categories = [...new Set(visibleProducts.map(p => p.category))];
             const footerCat = document.getElementById('footer-categories');
             if (footerCat) {
                 footerCat.innerHTML = categories.map(cat => 
