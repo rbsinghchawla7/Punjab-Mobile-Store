@@ -357,127 +357,68 @@
       }
     };
 
-    // RENDER STORE AS CATEGORY SECTIONS
-    function renderCategorySections(filterSearch = "") {
-      const wrapper = document.getElementById('category-sections-wrapper');
-      wrapper.innerHTML = "";
+ // RENDER STORE AS CATEGORY SECTIONS (WITH SWIPE ANIMATION & SEARCH)
+function renderCategorySections(filterSearch = "") {
+    const wrapper = document.getElementById('category-sections-wrapper') || document.getElementById('products-container') || document.querySelector('main');
+    if (!wrapper) return;
+    wrapper.innerHTML = "";
 
-      // Unique Categories extract karo
-      const categories = [...new Set(products.map(p => p.category))];
+    const categories = [...new Set(products.map(p => p.category))];
+    let totalResults = 0;
 
-      let totalResults = 0;
-
-      categories.forEach(cat => {
+    categories.forEach(cat => {
         const catProducts = products.filter(p => {
-          const matchCat = p.category === cat;
-          const matchSearch = filterSearch === "" || p.title.toLowerCase().includes(filterSearch);
-          return matchCat && matchSearch;
+            const matchCat = p.category === cat;
+            const matchSearch = filterSearch === "" || p.title.toLowerCase().includes(filterSearch.toLowerCase());
+            return matchCat && matchSearch;
         });
 
         if (catProducts.length > 0) {
-          totalResults += catProducts.length;
-          const sectionHtml = `
-            <section class="space-y-4">
-              <!-- Section Header -->
-              <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
-                <div class="flex items-center gap-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                  <h2 class="text-base sm:text-lg font-bold text-white tracking-wide">${cat}</h2>
-                  <span class="text-xs text-slate-500 font-semibold bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">${catProducts.length} items</span>
-                </div>
-              </div>
+            totalResults += catProducts.length;
 
-              <!-- Product Grid for this Category -->
-              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                ${catProducts.map(p => `
-                  <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-slate-700 transition">
-                    <div onclick="openProductModal(${p.id})" class="cursor-pointer relative bg-slate-950 aspect-square group">
-                      <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-                      <span class="absolute top-2 left-2 bg-amber-500 text-slate-950 font-extrabold text-[10px] px-2 py-0.5 rounded-full">HOT</span>
-                      <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                        <span class="text-xs bg-slate-900/90 text-amber-400 font-semibold px-2 py-1 rounded-md border border-slate-700">Quick View</span>
-                      </div>
-                    </div>
-                    <div class="p-3.5 flex flex-col flex-grow justify-between">
-                      <div onclick="openProductModal(${p.id})" class="cursor-pointer">
-                        <h3 class="text-sm font-semibold text-slate-100 line-clamp-2 mt-1 leading-snug hover:text-amber-400">${p.title}</h3>
-                      </div>
-                      <div class="mt-3">
-                        <div class="flex items-baseline gap-2">
-                          <span class="text-base font-bold text-amber-400">₹${p.price}</span>
-                          <span class="text-xs text-slate-500 line-through">₹${p.originalPrice}</span>
+            let productsHtml = catProducts.map(p => `
+                <div class="product-card-snap bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-col justify-between">
+                    <div>
+                        <div class="w-full h-32 sm:h-36 rounded-xl bg-slate-950 overflow-hidden mb-2">
+                            <img src="${p.image}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150'">
                         </div>
-                        <button onclick="addToCart(${p.id})" class="w-full mt-2 py-2 bg-slate-800 hover:bg-amber-500 hover:text-slate-950 text-slate-200 text-xs font-bold rounded-lg transition">
-                          Add to Cart
-                        </button>
-                      </div>
+                        <h4 class="text-slate-200 font-semibold text-xs line-clamp-2 mb-1">${p.title}</h4>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-amber-400 font-bold text-sm">₹${p.price}</span>
+                            <span class="text-slate-500 line-through text-xs">₹${p.originalPrice}</span>
+                        </div>
                     </div>
-                  </div>
-                `).join('')}
-              </div>
-            </section>
-          `;
-          wrapper.innerHTML += sectionHtml;
+                    <button onclick="addToCart(${p.id})" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-1.5 rounded-xl text-xs transition cursor-pointer">
+                        Add to Cart
+                    </button>
+                </div>
+            `).join('');
+
+            const sectionHtml = `
+                <section class="space-y-3 mb-6">
+                    <div class="flex items-center justify-between px-1">
+                        <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span> ${cat}
+                            <span class="text-xs text-slate-500 font-normal">(${catProducts.length})</span>
+                        </h2>
+                        <span class="swipe-indicator">
+                            Swipe 👉
+                        </span>
+                    </div>
+                    <div class="products-horizontal-scroll">
+                        ${productsHtml}
+                    </div>
+                </section>
+            `;
+
+            wrapper.innerHTML += sectionHtml;
         }
-      });
+    });
 
-      if (totalResults === 0) {
-        wrapper.innerHTML = `<p class="text-slate-500 text-center py-12">No products found matching "${filterSearch}".</p>`;
-      }
-
-      lucide.createIcons();
+    if (totalResults === 0) {
+        wrapper.innerHTML = `<div class="text-center py-12 text-slate-500 text-sm">No products found matching "${filterSearch}"</div>`;
     }
-
-    function handleSearch() {
-      const q = document.getElementById('search-input').value.toLowerCase().trim();
-      renderCategorySections(q);
-    }
-
-    // PRODUCT MODAL WITH RELATED/SUGGESTED ITEMS
-    function openProductModal(id) {
-      const p = products.find(item => item.id === id);
-      if (!p) return;
-
-      document.getElementById('modal-img').src = p.image;
-      document.getElementById('modal-cat').innerText = p.category;
-      document.getElementById('modal-title').innerText = p.title;
-      document.getElementById('modal-price').innerText = `₹${p.price}`;
-      document.getElementById('modal-original-price').innerText = `₹${p.originalPrice}`;
-      document.getElementById('modal-desc').innerText = p.description || "No extra description provided.";
-
-      // RELATED SUGGESTED PRODUCTS (Same category, excluding current product)
-      const related = products.filter(item => item.category === p.category && item.id !== p.id).slice(0, 3);
-      const suggestedContainer = document.getElementById('suggested-products');
-
-      if (related.length > 0) {
-        suggestedContainer.innerHTML = related.map(rel => `
-          <div onclick="openProductModal(${rel.id})" class="cursor-pointer bg-slate-950 border border-slate-800 p-2 rounded-xl text-center hover:border-amber-500 transition">
-            <img src="${rel.image}" class="w-full aspect-square object-cover rounded-lg mb-1.5">
-            <p class="text-[11px] text-slate-200 font-semibold line-clamp-1">${rel.title}</p>
-            <p class="text-xs font-bold text-amber-400 mt-0.5">₹${rel.price}</p>
-          </div>
-        `).join('');
-      } else {
-        suggestedContainer.innerHTML = `<p class="text-xs text-slate-500 col-span-3">More products coming soon in this category.</p>`;
-      }
-
-      document.getElementById('modal-add-btn').onclick = function() {
-        addToCart(p.id);
-        closeProductModal();
-      };
-      document.getElementById('modal-wa-btn').onclick = function() {
-        const msg = `Hello! I want to order this product:%0A*${p.title}*%0APrice: ₹${p.price}`;
-        window.open(`https://wa.me/${shopWhatsAppNumber}?text=${msg}`, '_blank');
-      };
-
-      document.getElementById('product-modal').classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function closeProductModal() {
-      document.getElementById('product-modal').classList.add('hidden');
-    }
-
+}
     // CART MANAGEMENT
     function addToCart(id) {
       const item = products.find(p => p.id === id);
