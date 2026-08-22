@@ -491,20 +491,31 @@ function renderCategorySections(filterSearch = "") {
       window.open(`https://wa.me/${shopWhatsAppNumber}?text=${msg}`, '_blank');
     }
 
-    // INIT STORE & FOOTER
-    function init() {
-      renderCategorySections();
-      updateCartUI();
-      
-      // Footer categories
-      const categories = [...new Set(products.map(p => p.category))];
-      const footerCat = document.getElementById('footer-categories');
-      footerCat.innerHTML = categories.map(cat => `
-        <li><span class="text-slate-400">${cat}</span></li>
-      `).join('');
+   // INIT STORE & FOOTER
+function init() {
+    if (typeof renderCategorySections === 'function') {
+        renderCategorySections();
+    }
+    if (typeof updateCartUI === 'function') {
+        updateCartUI();
     }
 
+    // Safe Footer Categories Render
+    const footerCat = document.getElementById('footer-categories');
+    if (footerCat && Array.isArray(products)) {
+        const categories = [...new Set(products.map(p => p.category))];
+        footerCat.innerHTML = categories.map(cat => 
+            `<li><span class="text-slate-400">${cat}</span></li>`
+        ).join('');
+    }
+}
+
+// Ensure DOM is fully ready before running
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
     init();
-  </script>
+}
+</script>
 </body>
 </html>
